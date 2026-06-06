@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nexus — Wholesale ERP + CRM + WMS Platform
 
-## Getting Started
+A production-ready, enterprise-grade SaaS platform for clothing wholesale companies. Built with Next.js, PostgreSQL, Redis, and a modular monolith architecture.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-16-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
+![Prisma](https://img.shields.io/badge/Prisma-6-teal)
+
+## Features
+
+### ERP
+Product catalog, categories, suppliers, purchases, sales, invoices, expenses, finance dashboard, revenue analytics
+
+### CRM
+Customer management, lead tracking, deal pipeline (Kanban), notes, activity timeline, follow-up reminders
+
+### WMS
+Multi-warehouse management, zones/shelves, inventory tracking, barcode support, transfers, dispatch, receiving, low stock alerts
+
+### Platform
+JWT auth + refresh tokens, RBAC (7 roles), audit logging, Redis caching, BullMQ job queues, command palette (⌘K), dark mode
+
+## Quick Start
 
 ```bash
+# Install
+npm install
+
+# Start database & cache
+docker compose up postgres redis -d
+
+# Setup database
+npm run db:push
+npm run db:seed
+
+# Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Demo credentials:** `admin@demo.com` / `Password123!`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> **Database:** Default connection uses your local PostgreSQL:
+> ```
+> postgresql://erp_user:StrongPassword123!@localhost:5432/erp_system
+> ```
+> If the user/database does not exist yet, create them first:
+> ```bash
+> psql -U postgres -f scripts/setup-database.sql
+> npm run db:push && npm run db:seed
+> ```
+> Then restart the dev server.
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 16, React 19, Tailwind CSS 4, shadcn/ui, Framer Motion |
+| Backend | Server Actions, Route Handlers, Service Layer, Repository Pattern |
+| Database | PostgreSQL 16, Prisma ORM |
+| Cache/Queue | Redis 7, BullMQ |
+| Auth | JWT + Refresh Tokens, RBAC |
+| Infrastructure | Docker, Docker Compose, Nginx |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── (auth)/             # Login, Register
+│   ├── (dashboard)/        # Protected routes
+│   └── api/                # REST API
+├── components/             # UI components
+├── features/               # Feature modules (auth, erp, crm, wms)
+├── lib/                    # Shared utilities
+└── workers/                # Background jobs
+```
 
-## Deploy on Vercel
+## Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Production build |
+| `npm run db:push` | Push schema to database |
+| `npm run db:seed` | Seed demo data |
+| `npm run db:studio` | Open Prisma Studio |
+| `npm run worker` | Start BullMQ workers |
+| `npm run docker:up` | Start full Docker stack |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Production Deployment
+
+```bash
+# Configure environment
+cp .env.example .env
+
+# Build and deploy
+docker compose up -d --build
+docker compose exec app npx prisma db push
+docker compose exec app npm run db:seed
+```
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full documentation including:
+- Database ERD
+- Architecture decisions
+- Scaling strategy
+- Security recommendations
+- VPS deployment guide
+- Development roadmap
+
+## License
+
+Proprietary — All rights reserved.
