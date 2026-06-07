@@ -23,6 +23,8 @@
 # misc
 .DS_Store
 *.pem
+/logs
+/uploads
 
 # debug
 npm-debug.log*
