@@ -102,3 +102,5 @@ jobs:
             git reset --hard origin/main
             chmod +x scripts/deploy-ci.sh scripts/deploy-vps.sh
             ./scripts/deploy-ci.sh
+
+
