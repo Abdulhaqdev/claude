@@ -73,8 +73,11 @@ jobs:
       - uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile
           push: false
           tags: nexus-platform:latest
+          build-args: |
+            NEXT_PUBLIC_APP_URL=https://srm.boostify.uz
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -83,7 +86,19 @@ jobs:
     needs: docker
     if: github.ref == 'refs/heads/main'
     environment: production
+    timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to VPS
-        run: echo "Deploy step — configure SSH deploy to your VPS here"
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          command_timeout: 50m
+          script: |
+            set -e
+            cd /opt/claude
+            git fetch origin main
+            git reset --hard origin/main
+            chmod +x scripts/deploy-ci.sh scripts/deploy-vps.sh
+            ./scripts/deploy-ci.sh
