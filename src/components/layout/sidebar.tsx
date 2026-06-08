@@ -132,7 +132,7 @@ export function Sidebar({ collapsed, onToggle, user, onOpenCommand }: SidebarPro
             animate={{ opacity: 1 }}
             className="flex flex-col"
           >
-            <span className="text-sm font-semibold tracking-tight">Nexus</span>
+            <span className="text-sm font-semibold tracking-tight">cd cd ishladi </span>
             <span className="text-[10px] text-muted-foreground">Wholesale Platform</span>
           </motion.div>
         )}
